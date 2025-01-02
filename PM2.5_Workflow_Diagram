@@ -1,0 +1,43 @@
+digraph "PM2.5 Workflow" {
+	rankdir=TB size=8
+	node [color=lightblue fontname=Arial fontsize=10 shape=box style=filled]
+	1 [label="Data Collection"]
+	2 [label="Meteorological Data"]
+	3 [label="Traffic Data"]
+	4 [label="Public Health Data"]
+	5 [label="Data Integration"]
+	6 [label="Data Preprocessing"]
+	7 [label="Handle Missing Values"]
+	8 [label="Normalize Features"]
+	9 [label="Encode Categorical Data"]
+	10 [label="Feature Selection"]
+	11 [label="Select Critical Predictors"]
+	12 [label="Model Development"]
+	13 [label="Train LSTM"]
+	14 [label="Train XGBoost"]
+	15 [label="Train Random Forest"]
+	16 [label="Model Evaluation"]
+	17 [label=Visualizations]
+	18 [label="Final Insights and Recommendations"]
+	1 -> 2
+	1 -> 3
+	1 -> 4
+	2 -> 5
+	3 -> 5
+	4 -> 5
+	5 -> 6
+	6 -> 7
+	6 -> 8
+	6 -> 9
+	6 -> 10
+	10 -> 11
+	11 -> 12
+	12 -> 13
+	12 -> 14
+	12 -> 15
+	13 -> 16
+	14 -> 16
+	15 -> 16
+	16 -> 17
+	17 -> 18
+}
