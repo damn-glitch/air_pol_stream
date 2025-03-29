@@ -1930,4 +1930,231 @@ elif page == "Recommendations":
     )
     
     fig.add_annotation(
-        x=35,
+        x=35, y=85,
+        text="MAJOR PROJECTS",
+        showarrow=False,
+        font=dict(size=14, color="blue")
+    )
+    
+    fig.add_annotation(
+        x=85, y=35,
+        text="FILL-INS",
+        showarrow=False,
+        font=dict(size=14, color="orange")
+    )
+    
+    fig.add_annotation(
+        x=35, y=35,
+        text="THANKLESS TASKS",
+        showarrow=False,
+        font=dict(size=14, color="gray")
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Cost-benefit analysis
+    st.markdown("<h2 class='sub-header'>Cost-Benefit Analysis</h2>", unsafe_allow_html=True)
+    
+    # Create cost-benefit data
+    cb_data = {
+        'Measure': priority_data['Measure'],
+        'Cost': [
+            500000, 300000, 750000, 900000, 200000, 150000, 1500000, 350000
+        ],  # in thousands of AED
+        'Benefit': [
+            800000, 600000, 700000, 850000, 300000, 250000, 1700000, 500000
+        ],  # in thousands of AED
+        'ROI': []  # to be calculated
+    }
+    
+    # Calculate ROI
+    for i in range(len(cb_data['Cost'])):
+        cb_data['ROI'].append(round((cb_data['Benefit'][i] - cb_data['Cost'][i]) / cb_data['Cost'][i] * 100, 1))
+    
+    cb_df = pd.DataFrame(cb_data)
+    
+    # Create waterfall chart for ROI
+    fig = go.Figure(go.Waterfall(
+        name="ROI",
+        orientation="v",
+        measure=["relative"] * len(cb_df),
+        x=cb_df['Measure'],
+        y=cb_df['ROI'],
+        connector={"line": {"color": "rgb(63, 63, 63)"}},
+        increasing={"marker": {"color": "green"}},
+        decreasing={"marker": {"color": "red"}},
+        text=cb_df['ROI'].apply(lambda x: f"{x}%"),
+        textposition="outside"
+    ))
+    
+    fig.update_layout(
+        title="Return on Investment by Measure",
+        xaxis_title="Measure",
+        yaxis_title="ROI (%)",
+        height=500,
+        showlegend=False
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Implementation timeline
+    st.markdown("<h2 class='sub-header'>Implementation Timeline</h2>", unsafe_allow_html=True)
+    
+    # Create timeline data
+    timeline_data = {
+        'Task': priority_data['Measure'],
+        'Start': [
+            '2025-01', '2025-01', '2025-04', '2025-02', 
+            '2025-01', '2025-01', '2025-06', '2025-03'
+        ],
+        'End': [
+            '2025-12', '2025-06', '2026-12', '2026-02', 
+            '2025-04', '2025-03', '2027-06', '2025-12'
+        ],
+        'Duration': []  # to be calculated
+    }
+    
+    # Calculate duration in months
+    for i in range(len(timeline_data['Start'])):
+        start = pd.to_datetime(timeline_data['Start'][i])
+        end = pd.to_datetime(timeline_data['End'][i])
+        timeline_data['Duration'].append((end.year - start.year) * 12 + end.month - start.month)
+    
+    timeline_df = pd.DataFrame(timeline_data)
+    
+    # Sort by start date
+    timeline_df = timeline_df.sort_values('Start')
+    
+    # Create Gantt chart
+    fig = px.timeline(
+        timeline_df, 
+        x_start='Start', 
+        x_end='End', 
+        y='Task',
+        color='Duration',
+        color_continuous_scale='Blues',
+        title='Implementation Timeline'
+    )
+    
+    fig.update_layout(
+        xaxis_title="Date",
+        yaxis_title="Measure",
+        height=500
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Expected outcomes
+    st.markdown("<h2 class='sub-header'>Expected Outcomes</h2>", unsafe_allow_html=True)
+    
+    # Create outcome data
+    outcome_data = {
+        'Year': [2025, 2026, 2027, 2028, 2029, 2030],
+        'BAU': [100, 105, 110, 115, 120, 125],  # Business as usual
+        'Moderate': [100, 95, 90, 85, 80, 75],   # Moderate implementation
+        'Aggressive': [100, 90, 80, 70, 60, 50]  # Aggressive implementation
+    }
+    
+    outcome_df = pd.DataFrame(outcome_data)
+    
+    # Create line chart
+    fig = px.line(
+        outcome_df,
+        x='Year',
+        y=['BAU', 'Moderate', 'Aggressive'],
+        labels={'value': 'PM2.5 Index (2025=100)', 'variable': 'Scenario'},
+        title='Projected PM2.5 Levels by Implementation Scenario',
+        color_discrete_sequence=['#FF5722', '#FFC107', '#4CAF50']
+    )
+    
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title="PM2.5 Index (2025=100)",
+        height=400,
+        hovermode="x unified"
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Health and economic benefits
+    st.markdown("<h2 class='sub-header'>Health and Economic Benefits</h2>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Health benefits
+        health_data = {
+            'Benefit': [
+                'Reduced Respiratory Cases',
+                'Reduced Cardiovascular Events',
+                'Fewer Hospital Admissions',
+                'Decreased Mortality',
+                'Improved Productivity'
+            ],
+            'Estimated Annual Savings': [
+                5000, 3000, 2000, 500, 10000
+            ]
+        }
+        
+        health_df = pd.DataFrame(health_data)
+        
+        fig = px.bar(
+            health_df,
+            x='Benefit',
+            y='Estimated Annual Savings',
+            title='Annual Health Impact (Cases Avoided)',
+            color='Estimated Annual Savings',
+            color_continuous_scale='Greens'
+        )
+        
+        fig.update_layout(height=400)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        # Economic benefits
+        economic_data = {
+            'Category': [
+                'Healthcare Savings',
+                'Productivity Gains',
+                'Tourism Increase',
+                'Property Value Increase',
+                'Reduced Cleaning Costs'
+            ],
+            'Value (Million AED)': [
+                500, 750, 300, 450, 200
+            ]
+        }
+        
+        economic_df = pd.DataFrame(economic_data)
+        
+        fig = px.pie(
+            economic_df,
+            values='Value (Million AED)',
+            names='Category',
+            title='Economic Benefits Distribution',
+            color_discrete_sequence=px.colors.sequential.Blues
+        )
+        
+        fig.update_layout(height=400)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # Final call to action
+    st.markdown("""
+    <div style='background-color: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 30px;'>
+        <h3 style='color: #1E88E5; text-align: center;'>Path Forward</h3>
+        <p style='text-align: center; font-size: 1.1rem;'>
+            Implementing these recommendations would significantly improve air quality across the UAE,
+            resulting in substantial health, economic, and environmental benefits.
+            A coordinated approach involving government agencies, private sector, and civil society
+            is essential for successful implementation.
+        </p>
+        <p style='text-align: center; font-size: 1.1rem; margin-top: 15px;'>
+            <b>The time to act is now. Cleaner air means healthier communities and a more sustainable future.</b>
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    st.sidebar.markdown("---")
+    st.sidebar.info("Created by Alisher Beisembekov & Tairlan Kairolla")
+    st.sidebar.markdown("Version 2.0 | March 2025")
